@@ -1,0 +1,17 @@
+import { createClient } from './client'
+import tracker from '@hcengineering/tracker'
+
+async function main (): Promise<void> {
+  const client = await createClient()
+  try {
+    const projects = await client.findAll(tracker.class.Project, {})
+    console.log(`Found ${projects.length} projects:\n`)
+    for (const project of projects) {
+      console.log(`  [${project.identifier}] ${(project as any).name ?? project.description ?? '(no name)'}`)
+    }
+  } finally {
+    await client.close()
+  }
+}
+
+main().catch((err) => { console.error(err); process.exit(1) })

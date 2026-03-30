@@ -1,0 +1,31 @@
+{
+  "name": "platform-api",
+  "version": "1.0.0",
+  "description": "This guide will help you understand how to interact with the Huly API for various operations by providing examples of authentication, querying issues, updating issues, and creating new issues. Whether you're integrating Huly into your application or building a custom client, the examples provided here will help you get started.",
+  "main": "index.ts",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "build": "compile",
+    "start": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hcengineering/api-client": "^0.7.3",
+    "@hcengineering/contact": "0.7.0",
+    "@hcengineering/core": "^0.7.4",
+    "@hcengineering/document": "^0.7.0",
+    "@hcengineering/rank": "^0.7.3",
+    "@hcengineering/tags": "^0.7.0",
+    "@hcengineering/task": "0.7.0",
+    "@hcengineering/tracker": "^0.7.0",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.0",
+    "@types/ws": "^8.5.3",
+    "ts-node": "^10.8.0",
+    "typescript": "^5.3.3"
+  }
+}
