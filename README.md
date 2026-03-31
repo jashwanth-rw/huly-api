@@ -77,51 +77,109 @@ All scripts use the [`@hcengineering/api-client`](https://www.npmjs.com/package/
 
 Additional reference examples are in `examples/` (issue CRUD, documents, persons, labels).
 
-## Setup
+## Quick Setup (for any LLM / Agent)
+
+> **Copy-paste this prompt to any AI agent (Claude Code, Cursor, Copilot, etc.) and it will set everything up for you.**
+
+```
+Clone and set up the Huly API skill from https://github.com/jashwanth-rw/huly-api.git
+
+Follow these steps IN ORDER:
+
+1. Clone the repo:
+   git clone https://github.com/jashwanth-rw/huly-api.git
+   cd huly-api
+
+2. Authenticate with GitHub (needed for @hcengineering packages):
+   gh auth login  (if not already authenticated)
+
+3. Create .npmrc for GitHub Packages auth (MUST be done BEFORE installing):
+   echo '@hcengineering:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken='$(gh auth token) > huly-examples/platform-api/.npmrc
+
+4. Install pnpm globally (if not already installed):
+   npm i -g pnpm
+
+5. Install dependencies (MUST run inside platform-api, NOT the root):
+   cd huly-examples/platform-api
+   pnpm i
+   cd ../..
+
+6. Create .env file at huly-examples/platform-api/.env with:
+   HULY_URL=<ask me>
+   HULY_EMAIL=<ask me>
+   HULY_PASSWORD=<ask me>
+   HULY_WORKSPACE=<ask me>
+
+7. Test the connection:
+   cd huly-examples/platform-api
+   npx ts-node src/list-all-projects.ts 2>&1 | grep -v "no document found"
+
+8. Install the skills for your editor:
+
+   FOR CLAUDE CODE:
+   - Symlink skills to ~/.claude/skills/:
+     mkdir -p ~/.claude/skills
+     ln -s $(pwd)/skills/huly ~/.claude/skills/huly
+     ln -s $(pwd)/skills/ship ~/.claude/skills/ship
+   - Replace <YOUR_CLONE_PATH> in both SKILL.md files with the absolute path to the repo
+   - Restart Claude Code. Use /huly and /ship as slash commands.
+
+   FOR CURSOR:
+   - Copy skills as Cursor rules in your project:
+     mkdir -p .cursor/rules
+     cp skills/huly/SKILL.md .cursor/rules/huly.mdc
+     cp skills/ship/SKILL.md .cursor/rules/ship.mdc
+   - Replace <YOUR_CLONE_PATH> in both .mdc files with the absolute path to the repo
+   - Restart Cursor. Ask naturally: "List my Huly projects", "Ship my changes", etc.
+
+IMPORTANT:
+- The .npmrc MUST exist before running pnpm i, otherwise @hcengineering packages won't install
+- pnpm i MUST run inside huly-examples/platform-api/, NOT the repo root
+- Ask the user for their Huly credentials if not provided
+```
+
+## Manual Setup
 
 ### 1. Prerequisites
 
 - [Node.js](https://nodejs.org/) >= 18
+- [GitHub CLI](https://cli.github.com/) (`gh`) installed and authenticated
 - A running Huly instance ([self-hosted](https://huly.io/self-hosting) or [Huly Cloud](https://huly.app))
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed
 
-### 2. Authenticate with GitHub
+### 2. Clone the repo
 
-The `@hcengineering/*` packages are published on GitHub Packages, so you need to be authenticated:
+```bash
+git clone https://github.com/jashwanth-rw/huly-api.git
+cd huly-api
+```
+
+### 3. Authenticate with GitHub Packages
+
+The `@hcengineering/*` packages are on GitHub Packages. Authenticate with `gh` and create the `.npmrc`:
 
 ```bash
 gh auth login
-```
 
-Then configure npm to use your GitHub token for the `@hcengineering` scope:
-
-```bash
 echo "@hcengineering:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=$(gh auth token)" > huly-examples/platform-api/.npmrc
 ```
 
-### 3. Clone and install
+### 4. Install dependencies
 
 ```bash
 # Install pnpm globally
 npm i -g pnpm
 
-git clone https://github.com/<your-org>/huly-api.git
-cd huly-api
-
-# Install Huly SDK dependencies
+# Install inside platform-api (NOT the repo root)
 cd huly-examples/platform-api
 pnpm i
 cd ../..
 ```
 
-### 4. Configure environment
+### 5. Configure environment
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your Huly credentials:
+Create `huly-examples/platform-api/.env`:
 
 ```
 HULY_URL=https://your-huly-instance.example.com
@@ -130,108 +188,60 @@ HULY_PASSWORD=your-password
 HULY_WORKSPACE=your-workspace
 ```
 
-| Variable | Description | Default (for local dev) |
-|----------|-------------|------------------------|
-| `HULY_URL` | Your Huly instance URL | `http://localhost:8087` |
-| `HULY_EMAIL` | Account email | `user1` |
-| `HULY_PASSWORD` | Account password | `1234` |
-| `HULY_WORKSPACE` | Workspace slug | `ws1` |
+| Variable | Description |
+|----------|-------------|
+| `HULY_URL` | Your Huly instance URL |
+| `HULY_EMAIL` | Account email |
+| `HULY_PASSWORD` | Account password |
+| `HULY_WORKSPACE` | Workspace slug |
 
-### 5. Test the connection
+### 6. Test the connection
 
 ```bash
 cd huly-examples/platform-api
-npx ts-node src/list-all-projects.ts
+npx ts-node src/list-all-projects.ts 2>&1 | grep -v "no document found"
 ```
 
 You should see your workspace projects listed.
 
-## Installing the Claude Code Skills
-
-The skills let you use `/huly` and `/ship` as slash commands inside Claude Code.
-
-### 1. Copy skills to your Claude config
+## Installing for Claude Code
 
 ```bash
-# Create the skills directory if it doesn't exist
-mkdir -p ~/.claude/skills/huly
-mkdir -p ~/.claude/skills/ship
+# From the huly-api repo root
+mkdir -p ~/.claude/skills
+ln -s $(pwd)/skills/huly ~/.claude/skills/huly
+ln -s $(pwd)/skills/ship ~/.claude/skills/ship
 
-# Copy skill definitions
-cp skills/huly/SKILL.md ~/.claude/skills/huly/SKILL.md
-cp skills/ship/SKILL.md ~/.claude/skills/ship/SKILL.md
+# Update paths in skill files
+sed -i "s|<YOUR_CLONE_PATH>|$(pwd)|g" skills/huly/SKILL.md
+sed -i "s|<YOUR_CLONE_PATH>|$(pwd)|g" skills/ship/SKILL.md
 ```
 
-### 2. Update paths in the skill files
-
-Open each skill file and replace `<YOUR_CLONE_PATH>` with the absolute path to your clone:
+Restart Claude Code. Use `/huly` and `/ship` as slash commands.
 
 ```bash
-# Example: if you cloned to ~/projects/huly-api
-sed -i '' 's|<YOUR_CLONE_PATH>|/Users/you/projects/huly-api|g' ~/.claude/skills/huly/SKILL.md
-sed -i '' 's|<YOUR_CLONE_PATH>|/Users/you/projects/huly-api|g' ~/.claude/skills/ship/SKILL.md
-```
-
-### 3. Update credentials in the skill files
-
-Replace the environment variable placeholders in both skill files with your actual values, or configure them to read from your `.env` file.
-
-### 4. (Optional) Configure Claude Code permissions
-
-To avoid being prompted for permission on every script run, you can add allowed commands to `.claude/settings.local.json` in the repo (see `.claude/settings.local.json.example`).
-
-### 5. Use the skills
-
-Open Claude Code in any project directory:
-
-```bash
-# List your Huly projects
 /huly list-projects
-
-# See your open issues
 /huly my-issues
-
-# Create an issue
 /huly create-issue MYPROJ "Fix login timeout" "OAuth token expires too early" 2
-
-# Update issue status
 /huly update-status MYPROJ-42 Done
-
-# Add a comment
 /huly add-comment MYPROJ-42 "Deployed to production"
-
-# Full ship flow: create issue -> branch -> commit -> PR -> merge
 /ship
 ```
 
 ## Installing for Cursor
 
-Cursor doesn't have slash commands like Claude Code, but you can add the Huly instructions as **Cursor Rules**.
-
-### 1. Copy skills as Cursor rules
-
 ```bash
-# In your project directory
+# From your project directory
 mkdir -p .cursor/rules
+cp /path/to/huly-api/skills/huly/SKILL.md .cursor/rules/huly.mdc
+cp /path/to/huly-api/skills/ship/SKILL.md .cursor/rules/ship.mdc
 
-# Copy the skill definitions as rules
-cp skills/huly/SKILL.md .cursor/rules/huly.mdc
-cp skills/ship/SKILL.md .cursor/rules/ship.mdc
+# Update paths in rule files
+sed -i "s|<YOUR_CLONE_PATH>|/path/to/huly-api|g" .cursor/rules/huly.mdc
+sed -i "s|<YOUR_CLONE_PATH>|/path/to/huly-api|g" .cursor/rules/ship.mdc
 ```
 
-### 2. Update paths in the rule files
-
-Replace `<YOUR_CLONE_PATH>` with the absolute path to your `huly-api` clone:
-
-```bash
-# Example: if you cloned to ~/projects/huly-api
-sed -i 's|<YOUR_CLONE_PATH>|/home/you/projects/huly-api|g' .cursor/rules/huly.mdc
-sed -i 's|<YOUR_CLONE_PATH>|/home/you/projects/huly-api|g' .cursor/rules/ship.mdc
-```
-
-### 3. Usage
-
-Since Cursor doesn't support `/slash` commands, ask the agent naturally in chat:
+Restart Cursor. Ask the agent naturally:
 
 ```
 List my Huly projects
