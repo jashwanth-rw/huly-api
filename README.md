@@ -204,6 +204,42 @@ Open Claude Code in any project directory:
 /ship
 ```
 
+## Installing for Cursor
+
+Cursor doesn't have slash commands like Claude Code, but you can add the Huly instructions as **Cursor Rules**.
+
+### 1. Copy skills as Cursor rules
+
+```bash
+# In your project directory
+mkdir -p .cursor/rules
+
+# Copy the skill definitions as rules
+cp skills/huly/SKILL.md .cursor/rules/huly.mdc
+cp skills/ship/SKILL.md .cursor/rules/ship.mdc
+```
+
+### 2. Update paths in the rule files
+
+Replace `<YOUR_CLONE_PATH>` with the absolute path to your `huly-api` clone:
+
+```bash
+# Example: if you cloned to ~/projects/huly-api
+sed -i 's|<YOUR_CLONE_PATH>|/home/you/projects/huly-api|g' .cursor/rules/huly.mdc
+sed -i 's|<YOUR_CLONE_PATH>|/home/you/projects/huly-api|g' .cursor/rules/ship.mdc
+```
+
+### 3. Usage
+
+Since Cursor doesn't support `/slash` commands, ask the agent naturally in chat:
+
+```
+List my Huly projects
+Create a Huly issue in MYPROJ titled "Fix login timeout"
+Update MYPROJ-42 status to Done
+Ship my changes
+```
+
 ## Skill Reference
 
 ### `/huly` — Issue & Project Management
