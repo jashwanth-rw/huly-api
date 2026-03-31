@@ -1,7 +1,6 @@
 ---
 name: huly
 description: Manage Huly issues, projects, and tasks via API
-disable-model-invocation: true
 argument-hint: <action> [args...] — list-projects | my-projects | my-issues | create-issue | update-status | add-comment
 ---
 
@@ -9,7 +8,7 @@ argument-hint: <action> [args...] — list-projects | my-projects | my-issues | 
 
 Manage your Huly instance via API from Claude Code.
 
-All scripts live at: `<YOUR_CLONE_PATH>/huly-examples/platform-api/src/`
+All scripts live at: `/home/randomwalk/huly-api/huly-examples/platform-api/src/`
 
 ## Environment
 
@@ -24,7 +23,7 @@ HULY_WORKSPACE=<your workspace>
 
 ## Actions
 
-Parse `$ARGUMENTS` and run the matching action below. Always run from directory `<YOUR_CLONE_PATH>/huly-examples/platform-api/` and pipe output through `grep -v "no document found"` to suppress model warnings.
+Parse `$ARGUMENTS` and run the matching action below. Always run from directory `/home/randomwalk/huly-api/huly-examples/platform-api/` and pipe output through `grep -v "no document found"` to suppress model warnings.
 
 ### `list-projects`
 List all projects in the workspace.

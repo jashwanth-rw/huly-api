@@ -85,7 +85,22 @@ Additional reference examples are in `examples/` (issue CRUD, documents, persons
 - A running Huly instance ([self-hosted](https://huly.io/self-hosting) or [Huly Cloud](https://huly.app))
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed
 
-### 2. Clone and install
+### 2. Authenticate with GitHub
+
+The `@hcengineering/*` packages are published on GitHub Packages, so you need to be authenticated:
+
+```bash
+gh auth login
+```
+
+Then configure npm to use your GitHub token for the `@hcengineering` scope:
+
+```bash
+echo "@hcengineering:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=$(gh auth token)" > huly-examples/platform-api/.npmrc
+```
+
+### 3. Clone and install
 
 ```bash
 git clone https://github.com/<your-org>/huly-api.git
@@ -100,13 +115,7 @@ npm install
 cd ../..
 ```
 
-> **Note:** The `@hcengineering/*` packages are published on GitHub Packages. You may need a [GitHub personal access token](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-with-a-personal-access-token) to install them. Create an `.npmrc` in `huly-examples/platform-api/`:
-> ```
-> @hcengineering:registry=https://npm.pkg.github.com
-> //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
-> ```
-
-### 3. Configure environment
+### 4. Configure environment
 
 ```bash
 cp .env.example .env
@@ -128,7 +137,7 @@ HULY_WORKSPACE=your-workspace
 | `HULY_PASSWORD` | Account password | `1234` |
 | `HULY_WORKSPACE` | Workspace slug | `ws1` |
 
-### 4. Test the connection
+### 5. Test the connection
 
 ```bash
 cd huly-examples/platform-api
