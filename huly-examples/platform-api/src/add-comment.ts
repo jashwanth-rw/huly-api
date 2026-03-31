@@ -25,15 +25,6 @@ async function main (): Promise<void> {
 
     const commentId = generateId()
 
-    // Upload the comment message as markup
-    const message = await client.uploadMarkup(
-      'chunter:class:ChatMessage' as any,
-      commentId,
-      'message',
-      commentText,
-      'markdown'
-    )
-
     // Add comment as a ChatMessage in the issue's activity
     await client.addCollection(
       'chunter:class:ChatMessage' as any,
@@ -41,7 +32,7 @@ async function main (): Promise<void> {
       issue._id as any,
       issue._class,
       'comments',
-      { message },
+      { message: commentText },
       commentId as any
     )
 
