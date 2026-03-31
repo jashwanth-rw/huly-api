@@ -103,15 +103,15 @@ echo "@hcengineering:registry=https://npm.pkg.github.com
 ### 3. Clone and install
 
 ```bash
+# Install pnpm globally
+npm i -g pnpm
+
 git clone https://github.com/<your-org>/huly-api.git
 cd huly-api
 
-# Install root dependencies
-npm install
-
 # Install Huly SDK dependencies
 cd huly-examples/platform-api
-npm install
+pnpm i
 cd ../..
 ```
 
